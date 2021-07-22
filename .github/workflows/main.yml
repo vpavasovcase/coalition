@@ -1,0 +1,18 @@
+name: CI Script
+on: [push]
+
+jobs:
+  # Deploy Process
+  deploy:
+    runs-on: ubuntu-18.04 
+    steps:   
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2.1.0
+      with:
+        key: $ { { secrets.UPSTOCK_DEV_SERVER_PRIVATE_KEY } }
+        known_hosts: "placeholder"
+    - name: Adding Known Hosts
+      run: ssh-keyscan -H ${{ secrets.UPSTOCK_DEV_SERVER_IP }} >> ~/.ssh/known_hosts
+
+    - name: Execute test Script
+      run: ssh root@35.82.20.16 bash /var/www/upstock-environment/test
